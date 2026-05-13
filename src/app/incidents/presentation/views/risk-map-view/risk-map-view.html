@@ -1,1 +1,161 @@
-<p>risk-map-view works!</p>
+<section class="risk-map-page">
+
+  <header class="page-header">
+    <h1>Mapa de zonas de riesgo</h1>
+    <p>Visualización de áreas peligrosas cercanas.</p>
+  </header>
+
+  <!-- Search bar -->
+  <div class="search-container">
+
+    <input
+      type="text"
+      placeholder="Buscar zona..."
+      [(ngModel)]="searchTerm"
+    >
+
+    <button (click)="searchZone()">
+      Buscar
+    </button>
+
+    @if (searchTerm.length > 0) {
+
+      <div class="search-suggestions">
+
+        <div
+          class="suggestion-item"
+          *ngFor="let suggestion of searchSuggestions"
+          (click)="selectSuggestion(suggestion)">
+
+          <div class="suggestion-info">
+
+            <strong>
+              {{ suggestion.name }}
+            </strong>
+
+            <span>
+          {{ suggestion.district }}
+        </span>
+
+          </div>
+
+          <div class="suggestion-meta">
+
+        <span class="distance">
+          {{ suggestion.distance }}
+        </span>
+
+            <span
+              class="badge"
+              [ngClass]="suggestion.riskLevel">
+
+          {{ suggestion.riskLevel.toUpperCase() }}
+
+        </span>
+
+          </div>
+
+        </div>
+
+      </div>
+    }
+
+  </div>
+
+  <!-- Risk level filters -->
+  <div class="filter-buttons">
+
+    <button
+      [class.active]="selectedRiskLevel === 'all'"
+      (click)="filterZones('all')">
+      Todos
+    </button>
+
+    <button
+      [class.high]="selectedRiskLevel === 'high'"
+      (click)="filterZones('high')">
+      Alto
+    </button>
+
+    <button
+      [class.medium]="selectedRiskLevel === 'medium'"
+      (click)="filterZones('medium')">
+      Medio
+    </button>
+
+    <button
+      [class.low]="selectedRiskLevel === 'low'"
+      (click)="filterZones('low')">
+      Bajo
+    </button>
+
+  </div>
+
+  @if (isFiltered()) {
+    <div
+      class="active-filter-banner"
+      [ngClass]="selectedRiskLevel">
+      ● Filtro activo: {{ getSelectedRiskLabel() }} — {{ riskZones.length }} zonas encontradas
+    </div>
+  }
+
+  <!-- Map and summary section -->
+  <div class="map-content">
+
+    <div class="map-section">
+      <div id="map"></div>
+    </div>
+
+    <aside class="zone-summary-panel">
+      @if (selectedRiskLevel === 'all') {
+        <h3>Resumen de zona</h3>
+
+        <div class="summary-card red">
+          <strong>{{ getZonesByLevel('high') }}</strong>
+          <span>Zonas de riesgo alto</span>
+        </div>
+
+        <div class="summary-card yellow">
+          <strong>{{ getZonesByLevel('medium') }}</strong>
+          <span>Zonas de riesgo medio</span>
+        </div>
+
+        <div class="summary-card green">
+          <strong>{{ getZonesByLevel('low') }}</strong>
+          <span>Zonas de riesgo bajo</span>
+        </div>
+
+        <div class="summary-card red">
+          <strong>{{ getRiskIndex() }}%</strong>
+          <span>Índice estimado de riesgo</span>
+        </div>
+      }
+      <h3>Zonas activas</h3>
+
+      <div
+        class="active-zone"
+        *ngFor="let zone of getFeaturedZones()"
+        (click)="focusZone(zone)">
+
+        <div>
+          <strong>{{ zone.name }}</strong>
+          <span>{{ zone.incidentType }}</span>
+        </div>
+
+        <span
+          class="badge"
+          [ngClass]="zone.riskLevel">
+          {{ zone.riskLevel.toUpperCase() }}
+        </span>
+      </div>
+
+      <div class="live-status">
+        Actualización en tiempo real activa
+      </div>
+    </aside>
+
+  </div>
+
+
+
+</section>
