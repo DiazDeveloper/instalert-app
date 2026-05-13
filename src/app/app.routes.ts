@@ -26,7 +26,14 @@ export const routes: Routes = [
     path: 'reportes',
     loadComponent: () =>
       import('./incidents/presentation/views/report-views/report-views').then(
-        (m) => m.ReportsViewComponent,
+        (m) => m.ReportesComponent,
+      ),
+  },
+  {
+    path: 'crear-reporte',
+    loadComponent: () =>
+      import('./incidents/presentation/views/create-report/create-report').then(
+        (m) => m.CrearReporteComponent,
       ),
   },
   {
@@ -50,9 +57,7 @@ export const routes: Routes = [
         (m) => m.SettingsViewComponent,
       ),
   },
-
   {
-    // Ruta por defecto: Redirige al al dashboard al abrir la app
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',
